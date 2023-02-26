@@ -1,0 +1,29 @@
+{
+    "name": "database.discord",
+    "version": "1.0.1",
+    "description": "This is data base which uses discord as server to storage data)",
+    "author": "hayer-ek",
+    "license": "ISC",
+    "dependencies": {
+        "@types/node-fetch": "^2.6.2",
+        "node-fetch": "^3.3.0"
+    },
+    "type": "module",
+    "main": "dist/index.js",
+    "keywords": [
+        "discord",
+        "db",
+        "database",
+        "data",
+        "ddb",
+        "d-db",
+        "discorddb",
+        "discord-db",
+        "discord database",
+        "discorddatabase",
+        "discord db"
+    ],
+    "repository": {
+        "url": "https://github.com/hayer-ek/database.discord"
+    }
+}
