@@ -6,9 +6,9 @@ The database itself is running "very fast", perhaps this is the new era of all d
 
 ## Installation
 
-> **npm:** npm i database.discord
-> **yarn:** yarn add database.discord
-> **pnpm:** pnpm add database.discord
+>> **npm:** npm i database.discord
+>> **yarn:** yarn add database.discord
+>> **pnpm:** pnpm add database.discord
 
 ## Examples
 ```typescript
