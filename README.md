@@ -6,9 +6,11 @@ The database itself is running "very fast", perhaps this is the new era of all d
 
 ## Installation
 
->> **npm:** npm i database.discord
->> **yarn:** yarn add database.discord
->> **pnpm:** pnpm add database.discord
+> **npm:** npm i database.discord
+>
+> **yarn:** yarn add database.discord
+>
+> **pnpm:** pnpm add database.discord
 
 ## Examples
 ```typescript
@@ -36,17 +38,30 @@ const channel = await db.createChannelDb<types>({
     },
 });
 
-channel.createOne({ str: "hello world", num: 1 });  // Сreates a message with the given parameters
+channel.createOne({ str: "hello world", num: 1 });  
+// Сreates a message with the given parameters
 
-channel.deleteOne({ and: { str: { equals: "hello world" }, num: 1 } }); //Deletes the message by the given filter
+channel.deleteOne({ and: { 
+    str: { equals: "hello world" }, 
+    num: 1 } 
+}); 
+//Deletes the message by the given filter
 
-channel.findMany({ or: { str: { has: ["a", "b"] }, bool: false } }, { limit: 3 }).then((res) => {
+channel.findMany({ or: { 
+    str: { has: ["a", "b"] }, 
+    bool: false } }, 
+    { limit: 3 }
+).then((res) => {
     console.log(res);
-}); // Searches for messages by the given parameters
+}); 
+// Searches for messages by the given parameters
 
 channel.updateOne(
-    { and: { arr: { has: ["example"] }, num: { from: 3, to: 10 } } },
+    { and: { 
+        arr: { has: ["example"] }, 
+        num: { from: 3, to: 10 } } },
     { str: "new str" },
     { createIfNotFound: true, setDefault: true }
-); // Сhanges messages according to the given parameters
+); 
+// Сhanges messages according to the given parameters
 ```
