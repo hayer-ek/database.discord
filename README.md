@@ -5,9 +5,10 @@ This module allows you to work with a database that uses discord as a place to s
 The database itself is running "very fast", perhaps this is the new era of all databases
 
 ## Installation
+
 > npm: npm i database.discord
-yarn: yarn add database.discord
-pnpm: pnpm add database.discord
+> yarn: yarn add database.discord
+> pnpm: pnpm add database.discord
 
 ## Examples
 ```typescript
