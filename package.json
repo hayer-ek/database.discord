@@ -5,10 +5,8 @@
     "author": "hayer-ek",
     "license": "ISC",
     "dependencies": {
-        "@types/node-fetch": "^2.6.2",
-        "node-fetch": "^3.3.0"
+        "node-fetch": "^2.0.0"
     },
-    "type": "module",
     "main": "dist/index.js",
     "keywords": [
         "discord",
@@ -25,5 +23,8 @@
     ],
     "repository": {
         "url": "https://github.com/hayer-ek/database.discord"
+    },
+    "scripts": {
+        "start": "rm -r dist; tsc;cd ./dist; node index.js"
     }
 }

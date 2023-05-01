@@ -1,15 +1,25 @@
-export default function makeSearch(obj, searchFilter, channelData) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function makeSearch(obj, searchFilter, channelData, searchParams) {
     let andRes = true;
     let orRes = true;
     if (!obj)
         return false;
     if (searchFilter.and) {
-        Object.keys(searchFilter.and).forEach((k) => {
+        const objectKeys = Object.keys(searchFilter.and);
+        objectKeys.forEach((k) => {
             const key = k;
             const field = searchFilter.and[key];
             if (channelData.properties[key].type == "string") {
-                if (field.equals) {
-                    if (field.equals != obj[key]) {
+                if (typeof field == "string") {
+                    if (searchParams?.ignoreCase) {
+                        if (field.toLowerCase() !=
+                            obj[key].toLowerCase()) {
+                            andRes = false;
+                        }
+                        return;
+                    }
+                    if (field != obj[key]) {
                         andRes = false;
                     }
                     return;
@@ -20,7 +30,13 @@ export default function makeSearch(obj, searchFilter, channelData) {
                     field.has.forEach((prop) => {
                         if (has)
                             return;
-                        if (obj[key].includes(prop))
+                        if (searchParams?.ignoreCase) {
+                            if (obj[key]
+                                .toLowerCase()
+                                .includes(prop.toLowerCase()))
+                                has = true;
+                        }
+                        else if (obj[key].includes(prop))
                             has = true;
                     });
                 }
@@ -29,7 +45,13 @@ export default function makeSearch(obj, searchFilter, channelData) {
                     field.not.forEach((prop) => {
                         if (!not)
                             return;
-                        if (obj[key].includes(prop))
+                        if (searchParams?.ignoreCase) {
+                            if (obj[key]
+                                .toLowerCase()
+                                .includes(prop.toLowerCase()))
+                                not = false;
+                        }
+                        else if (obj[key].includes(prop))
                             not = false;
                     });
                 }
@@ -38,9 +60,17 @@ export default function makeSearch(obj, searchFilter, channelData) {
                 return;
             }
             if (channelData.properties[key].type == "number") {
+                if (typeof field == "number") {
+                    if (field != obj[key])
+                        andRes = false;
+                    return;
+                }
                 let fromTo = true;
-                if (field.from && field.to) {
-                    if (obj[key] < field.from || obj[key] > field.to) {
+                if (typeof field.from == "number" &&
+                    typeof field.to == "number") {
+                    if (obj[key] < field.from ||
+                        obj[key] > field.to ||
+                        field.from > field.to) {
                         fromTo = false;
                     }
                 }
@@ -89,16 +119,31 @@ export default function makeSearch(obj, searchFilter, channelData) {
         });
     }
     if (searchFilter.or) {
-        orRes = false;
-        Object.keys(searchFilter.or).forEach((k) => {
+        const objectKeys = Object.keys(searchFilter.or);
+        if (objectKeys.length > 0) {
+            orRes = false;
+        }
+        objectKeys.forEach((k) => {
             const key = k;
             if (typeof obj[key] == "undefined")
                 return;
             const field = searchFilter.or[key];
             if (channelData.properties[key].type == "string") {
-                if (field.equals) {
-                    if (field.equals != obj[key]) {
+                if (typeof field == "string") {
+                    if (searchParams?.ignoreCase) {
+                        if (field.toLowerCase() !=
+                            obj[key].toLowerCase()) {
+                            orRes = false;
+                            return;
+                        }
+                        orRes = true;
+                        return;
+                    }
+                    if (field != obj[key]) {
                         orRes = false;
+                    }
+                    else {
+                        orRes = true;
                     }
                     return;
                 }
@@ -107,7 +152,13 @@ export default function makeSearch(obj, searchFilter, channelData) {
                     field.has.forEach((prop) => {
                         if (has)
                             return;
-                        if (obj[key].includes(prop))
+                        if (searchParams?.ignoreCase) {
+                            if (obj[key]
+                                .toLowerCase()
+                                .includes(prop.toLowerCase()))
+                                has = true;
+                        }
+                        else if (obj[key].includes(prop))
                             has = true;
                     });
                 }
@@ -117,7 +168,13 @@ export default function makeSearch(obj, searchFilter, channelData) {
                     field.not.forEach((prop) => {
                         if (!not)
                             return;
-                        if (obj[key].includes(prop))
+                        if (searchParams?.ignoreCase) {
+                            if (obj[key]
+                                .toLowerCase()
+                                .includes(prop.toLowerCase()))
+                                not = false;
+                        }
+                        else if (obj[key].includes(prop))
                             not = false;
                     });
                 }
@@ -126,9 +183,16 @@ export default function makeSearch(obj, searchFilter, channelData) {
                 return;
             }
             if (channelData.properties[key].type == "number") {
+                if (typeof field == "number") {
+                    if (field == obj[key])
+                        orRes = true;
+                    return;
+                }
                 let fromTo = false;
-                if (field.from && field.to) {
-                    if (obj[key] > field.from && obj[key] <= field.to) {
+                if (typeof field.from == "number" &&
+                    typeof field.to == "number") {
+                    if (obj[key] > field.from &&
+                        obj[key] <= field.to) {
                         fromTo = true;
                     }
                 }
@@ -178,3 +242,4 @@ export default function makeSearch(obj, searchFilter, channelData) {
     }
     return andRes && orRes;
 }
+exports.default = makeSearch;

@@ -1,14 +1,16 @@
-import fetch from "node-fetch";
-export default function checkToken(token, baseUrl, cb) {
-    fetch(baseUrl + "/users/@me", {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const node_fetch_1 = __importDefault(require("node-fetch"));
+function checkToken(token, baseUrl) {
+    return (0, node_fetch_1.default)(baseUrl + "/users/@me", {
         headers: {
             Authorization: `Bot ${token}`,
         },
     }).then((res) => {
-        if (res.status == 401) {
-            throw new Error("Wrong token");
-        }
-        if (cb)
-            cb();
+        return res.status;
     });
 }
+exports.default = checkToken;

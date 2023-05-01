@@ -1,3 +1,5 @@
 import searchFilter from "../types/searchFilter";
 import addChannelParams from "../types/addChannelParams";
-export default function makeSearch<T>(obj: T, searchFilter: searchFilter<T>, channelData: addChannelParams<T>): boolean;
+import { convertForChannelDb } from "../types/convertType";
+import findSearchParams from "../types/findSearchParams";
+export default function makeSearch<A, T>(obj: T, searchFilter: searchFilter<convertForChannelDb<A>>, channelData: addChannelParams<T>, searchParams?: findSearchParams): boolean;

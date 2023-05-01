@@ -2,7 +2,6 @@ type dataParams<T> = {
     [K in keyof T]?: T[K] extends string ? T[K] | {
         has?: T[K][];
         not?: T[K][];
-        equals?: string;
     } : T[K] extends number ? T[K] | {
         from: number;
         to: number;

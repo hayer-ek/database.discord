@@ -1,22 +1,37 @@
 import searchFilter from "../types/searchFilter";
 import addChannelParams from "../types/addChannelParams";
+import { convertForChannelDb } from "../types/convertType";
+import findSearchParams from "../types/findSearchParams";
 
-export default function makeSearch<T>(
+export default function makeSearch<A, T>(
     obj: T,
-    searchFilter: searchFilter<T>,
-    channelData: addChannelParams<T>
+    searchFilter: searchFilter<convertForChannelDb<A>>,
+    channelData: addChannelParams<T>,
+    searchParams?: findSearchParams
 ): boolean {
     let andRes = true;
     let orRes = true;
     if (!obj) return false;
+
     if (searchFilter.and) {
-        Object.keys(searchFilter.and).forEach((k) => {
+        const objectKeys = Object.keys(searchFilter.and);
+
+        objectKeys.forEach((k) => {
             const key: keyof T = k as any;
             const field: any = searchFilter.and![key];
 
             if (channelData.properties[key].type == "string") {
-                if (field.equals) {
-                    if (field.equals != obj[key]) {
+                if (typeof field == "string") {
+                    if (searchParams?.ignoreCase) {
+                        if (
+                            field.toLowerCase() !=
+                            (obj[key] as string).toLowerCase()
+                        ) {
+                            andRes = false;
+                        }
+                        return;
+                    }
+                    if (field != obj[key]) {
                         andRes = false;
                     }
                     return;
@@ -26,7 +41,17 @@ export default function makeSearch<T>(
                     has = false;
                     field.has.forEach((prop: string) => {
                         if (has) return;
-                        if ((obj[key] as string).includes(prop)) has = true;
+                        if (searchParams?.ignoreCase) {
+                            if (
+                                (obj[key] as string)
+                                    .toLowerCase()
+                                    .includes(prop.toLowerCase())
+                            )
+                                has = true;
+                        } else if (
+                            (obj[key] as string).includes(prop)
+                        )
+                            has = true;
                     });
                 }
 
@@ -34,7 +59,17 @@ export default function makeSearch<T>(
                 if (field.not) {
                     field.not.forEach((prop: string) => {
                         if (!not) return;
-                        if ((obj[key] as string).includes(prop)) not = false;
+                        if (searchParams?.ignoreCase) {
+                            if (
+                                (obj[key] as string)
+                                    .toLowerCase()
+                                    .includes(prop.toLowerCase())
+                            )
+                                not = false;
+                        } else if (
+                            (obj[key] as string).includes(prop)
+                        )
+                            not = false;
                     });
                 }
 
@@ -43,9 +78,21 @@ export default function makeSearch<T>(
             }
 
             if (channelData.properties[key].type == "number") {
+                if (typeof field == "number") {
+                    if (field != obj[key]) andRes = false;
+                    return;
+                }
+
                 let fromTo = true;
-                if (field.from && field.to) {
-                    if (obj[key] < field.from || obj[key] > field.to) {
+                if (
+                    typeof field.from == "number" &&
+                    typeof field.to == "number"
+                ) {
+                    if (
+                        obj[key] < field.from ||
+                        obj[key] > field.to ||
+                        field.from > field.to
+                    ) {
                         fromTo = false;
                     }
                 }
@@ -74,7 +121,8 @@ export default function makeSearch<T>(
                     has = false;
                     field.has.forEach((prop: any) => {
                         if (has) return;
-                        if ((obj[key] as any[]).includes(prop)) has = true;
+                        if ((obj[key] as any[]).includes(prop))
+                            has = true;
                     });
                 }
 
@@ -82,7 +130,8 @@ export default function makeSearch<T>(
                 if (field.not) {
                     field.not.forEach((prop: any) => {
                         if (!not) return;
-                        if ((obj[key] as any[]).includes(prop)) not = false;
+                        if ((obj[key] as any[]).includes(prop))
+                            not = false;
                     });
                 }
 
@@ -91,17 +140,33 @@ export default function makeSearch<T>(
         });
     }
     if (searchFilter.or) {
-        orRes = false;
-        Object.keys(searchFilter.or).forEach((k) => {
+        const objectKeys = Object.keys(searchFilter.or);
+        if (objectKeys.length > 0) {
+            orRes = false;
+        }
+        objectKeys.forEach((k) => {
             const key: keyof T = k as any;
 
             if (typeof obj[key] == "undefined") return;
             const field: any = searchFilter.or![key];
 
             if (channelData.properties[key].type == "string") {
-                if (field.equals) {
-                    if (field.equals != obj[key]) {
+                if (typeof field == "string") {
+                    if (searchParams?.ignoreCase) {
+                        if (
+                            field.toLowerCase() !=
+                            (obj[key] as string).toLowerCase()
+                        ) {
+                            orRes = false;
+                            return;
+                        }
+                        orRes = true;
+                        return;
+                    }
+                    if (field != obj[key]) {
                         orRes = false;
+                    } else {
+                        orRes = true;
                     }
                     return;
                 }
@@ -110,7 +175,17 @@ export default function makeSearch<T>(
                 if (field.has) {
                     field.has.forEach((prop: string) => {
                         if (has) return;
-                        if ((obj[key] as string).includes(prop)) has = true;
+                        if (searchParams?.ignoreCase) {
+                            if (
+                                (obj[key] as string)
+                                    .toLowerCase()
+                                    .includes(prop.toLowerCase())
+                            )
+                                has = true;
+                        } else if (
+                            (obj[key] as string).includes(prop)
+                        )
+                            has = true;
                     });
                 }
 
@@ -119,7 +194,17 @@ export default function makeSearch<T>(
                     not = true;
                     field.not.forEach((prop: string) => {
                         if (!not) return;
-                        if ((obj[key] as string).includes(prop)) not = false;
+                        if (searchParams?.ignoreCase) {
+                            if (
+                                (obj[key] as string)
+                                    .toLowerCase()
+                                    .includes(prop.toLowerCase())
+                            )
+                                not = false;
+                        } else if (
+                            (obj[key] as string).includes(prop)
+                        )
+                            not = false;
                     });
                 }
 
@@ -128,9 +213,20 @@ export default function makeSearch<T>(
             }
 
             if (channelData.properties[key].type == "number") {
+                if (typeof field == "number") {
+                    if (field == obj[key]) orRes = true;
+                    return;
+                }
+
                 let fromTo = false;
-                if (field.from && field.to) {
-                    if (obj[key] > field.from && obj[key] <= field.to) {
+                if (
+                    typeof field.from == "number" &&
+                    typeof field.to == "number"
+                ) {
+                    if (
+                        obj[key] > field.from &&
+                        obj[key] <= field.to
+                    ) {
                         fromTo = true;
                     }
                 }
@@ -156,7 +252,8 @@ export default function makeSearch<T>(
                 if (field.has) {
                     field.has.forEach((prop: any) => {
                         if (has) return;
-                        if ((obj[key] as any[]).includes(prop)) has = true;
+                        if ((obj[key] as any[]).includes(prop))
+                            has = true;
                     });
                 }
 
@@ -165,7 +262,8 @@ export default function makeSearch<T>(
                     not = true;
                     field.not.forEach((prop: any) => {
                         if (!not) return;
-                        if ((obj[key] as any[]).includes(prop)) not = false;
+                        if ((obj[key] as any[]).includes(prop))
+                            not = false;
                     });
                 }
 

@@ -1,7 +1,12 @@
-import fetch from "node-fetch";
-export default function setUpdates(channelId, messageId, baseUrl, newContent, token) {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const node_fetch_1 = __importDefault(require("node-fetch"));
+function setUpdates(channelId, messageId, baseUrl, newContent, token) {
     return new Promise((resolve) => {
-        fetch(`${baseUrl}/channels/${channelId}/messages/${messageId}`, {
+        (0, node_fetch_1.default)(`${baseUrl}/channels/${channelId}/messages/${messageId}`, {
             method: "PATCH",
             headers: {
                 Authorization: `Bot ${token}`,
@@ -22,3 +27,4 @@ export default function setUpdates(channelId, messageId, baseUrl, newContent, to
         });
     });
 }
+exports.default = setUpdates;

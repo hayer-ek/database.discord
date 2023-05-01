@@ -13,9 +13,33 @@ type properties<T> = {
     };
 };
 
+type untypedProperties = {
+    [key: string]:
+        | {
+              type: "string";
+              default?: string;
+          }
+        | {
+              type: "number";
+              default?: number;
+          }
+        | {
+              type: "boolean";
+              default?: boolean;
+          }
+        | {
+              type: "array";
+              default?: any[];
+          }
+        | never;
+};
+
 interface addChannelParams<T> {
     channelId: string;
-    readonly properties: properties<T>;
+    readonly properties: T extends object
+        ? properties<T>
+        : untypedProperties;
 }
 
 export default addChannelParams;
+export { untypedProperties };

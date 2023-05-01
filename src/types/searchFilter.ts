@@ -5,7 +5,6 @@ type dataParams<T> = {
               | {
                     has?: T[K][];
                     not?: T[K][];
-                    equals?: string;
                 }
         : T[K] extends number
         ? T[K] | { from: number; to: number } | { or: number[] }
@@ -29,12 +28,5 @@ type searchFilter<T> =
           or?: never;
       };
 
-// type searchFilter<T> =
-//     | {
-//           or: dataParams<T>;
-//       }
-//     | {
-//           and: dataParams<T>;
-//       };
 export { dataParams };
 export default searchFilter;

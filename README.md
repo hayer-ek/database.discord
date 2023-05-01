@@ -6,29 +6,27 @@ The database itself is running "very fast", perhaps this is the new era of all d
 
 ## Installation
 
-> **npm:** npm i database.discord
+> **npm:** i database.discord
 >
-> **yarn:** yarn add database.discord
+> **yarn:** add database.discord
 >
-> **pnpm:** pnpm add database.discord
+> **pnpm:** add database.discord
 
 ## Examples
 ```typescript
 import DataBase from "database.discord";
 
 const db = new DataBase();
-db.connect("<your Discord bot token>", () => {
-    console.log("db is connected");
+db.connect("<your Discord bot token>");
+
+db.on("connect", () => {
+    console.log("DataBase is connected!");
+});
+db.on("error", (e) => {
+    console.error(`Error! ${e}`)
 });
 
-type types = {
-    str: string;
-    num: number;
-    bool: boolean;
-    arr: string[];
-};
-
-const channel = await db.createChannelDb<types>({
+const channel = await db.createChannelDb({
     channelId: "<channel id>",
     properties: {
         str: { type: "string", default: "im a string" },
@@ -38,15 +36,16 @@ const channel = await db.createChannelDb<types>({
     },
 });
 
-channel.createOne({ str: "hello world", num: 1 });  
 // Сreates a message with the given parameters
+channel.createOne({ str: "hello world", num: 1 });  
 
+//Deletes the message by the given filter
 channel.deleteOne({ and: { 
-    str: { equals: "hello world" }, 
+    str: "hello world" , 
     num: 1 } 
 }); 
-//Deletes the message by the given filter
 
+// Searches for messages by the given parameters
 channel.findMany({ or: { 
     str: { has: ["a", "b"] }, 
     bool: false } }, 
@@ -54,8 +53,8 @@ channel.findMany({ or: {
 ).then((res) => {
     console.log(res);
 }); 
-// Searches for messages by the given parameters
 
+// Сhanges messages according to the given parameters
 channel.updateOne(
     { and: { 
         arr: { has: ["example"] }, 
@@ -63,5 +62,7 @@ channel.updateOne(
     { str: "new str" },
     { createIfNotFound: true, setDefault: true }
 ); 
-// Сhanges messages according to the given parameters
 ```
+
+## Source
+This module is an open source project. You can find all the necessary code at [GitHub](https://github.com/hayer-ek/database.discord)

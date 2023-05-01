@@ -1,7 +1,12 @@
-import fetch from "node-fetch";
-export default function createMessage(channelId, baseUrl, token, content) {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const node_fetch_1 = __importDefault(require("node-fetch"));
+function createMessage(channelId, baseUrl, token, content) {
     return new Promise((resolve) => {
-        fetch(`${baseUrl}/channels/${channelId}/messages`, {
+        (0, node_fetch_1.default)(`${baseUrl}/channels/${channelId}/messages`, {
             method: "POST",
             headers: {
                 Authorization: `Bot ${token}`,
@@ -22,3 +27,4 @@ export default function createMessage(channelId, baseUrl, token, content) {
         });
     });
 }
+exports.default = createMessage;
