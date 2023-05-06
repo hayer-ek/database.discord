@@ -1,7 +1,7 @@
 {
     "name": "database.discord",
-    "version": "1.0.4",
-    "description": "This is data base which uses discord as server to storage data)",
+    "version": "1.0.5",
+    "description": "This is database which uses discord as server to storage data)",
     "author": "hayer-ek",
     "license": "ISC",
     "dependencies": {
@@ -9,6 +9,7 @@
     },
     "main": "dist/index.js",
     "keywords": [
+        "opensource",
         "discord",
         "db",
         "database",
