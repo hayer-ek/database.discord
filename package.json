@@ -1,6 +1,6 @@
 {
     "name": "database.discord",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "This is data base which uses discord as server to storage data)",
     "author": "hayer-ek",
     "license": "ISC",
@@ -26,5 +26,8 @@
     },
     "scripts": {
         "start": "rm -r dist; tsc;cd ./dist; node index.js"
+    },
+    "devDependencies": {
+        "@types/node-fetch": "^2.6.3"
     }
 }

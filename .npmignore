@@ -2,4 +2,3 @@ src
 tsconfig.json
 .gitignore
 node_modules
-package-lock.json
